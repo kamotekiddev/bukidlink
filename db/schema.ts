@@ -19,6 +19,13 @@ const UserTable = AuthSchema.table('users', {
     id: uuid('id').primaryKey(),
 });
 
+export const userRelations = relations(UserTable, ({ one }) => ({
+    profile: one(ProfileTable, {
+        fields: [UserTable.id],
+        references: [ProfileTable.user_id],
+    }),
+}));
+
 export const ProfileTable = pgTable('profiles', {
     id: uuid().primaryKey().defaultRandom(),
     full_name: text().notNull(),
@@ -29,6 +36,10 @@ export const ProfileTable = pgTable('profiles', {
 });
 
 export const profileRelations = relations(ProfileTable, ({ one }) => ({
+    user: one(UserTable, {
+        fields: [ProfileTable.user_id],
+        references: [UserTable.id],
+    }),
     profile_store: one(StoreTable),
 }));
 
