@@ -1,9 +1,8 @@
 import { createServerClient } from '@supabase/ssr';
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 export async function updateSession(request: NextRequest) {
-    const { pathname } = request.nextUrl;
-    let supabaseResponse = NextResponse.next({
+    let response = NextResponse.next({
         request,
     });
 
@@ -19,22 +18,16 @@ export async function updateSession(request: NextRequest) {
                     cookiesToSet.forEach(({ name, value, options }) =>
                         request.cookies.set(name, value)
                     );
-                    supabaseResponse = NextResponse.next({
+                    response = NextResponse.next({
                         request,
                     });
                     cookiesToSet.forEach(({ name, value, options }) =>
-                        supabaseResponse.cookies.set(name, value, options)
+                        response.cookies.set(name, value, options)
                     );
                 },
             },
         }
     );
 
-    // refreshing the auth token
-    const { data } = await supabase.auth.getUser();
-
-    if (!data.user && !pathname.includes('/auth/login'))
-        return NextResponse.redirect(new URL('/auth/login', request.url));
-
-    return supabaseResponse;
+    return { response, supabase };
 }

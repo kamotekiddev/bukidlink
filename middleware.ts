@@ -1,9 +1,20 @@
-import { type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from '@/utils/supabase/middleware';
 
+const AUTH_ROUTES = ['/auth/login', '/auth/callback'];
+
 export async function middleware(request: NextRequest) {
-    // update user's auth session
-    return await updateSession(request);
+    const { pathname } = request.nextUrl;
+    const { supabase, response } = await updateSession(request);
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user && !AUTH_ROUTES.includes(pathname))
+        return NextResponse.redirect(new URL('/auth/login', request.nextUrl));
+
+    return response;
 }
 
 export const config = {

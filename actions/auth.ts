@@ -5,12 +5,10 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
 export const login = async () => {
-    const supabase = await createClient();
+    const { auth } = await createClient();
     const { get } = await headers();
 
-    console.log(`${get('origin')}/auth/callback`);
-
-    const { data } = await supabase.auth.signInWithOAuth({
+    const { data } = await auth.signInWithOAuth({
         provider: 'google',
         options: {
             redirectTo: `${get('origin')}/auth/callback`,
@@ -21,6 +19,6 @@ export const login = async () => {
 };
 
 export const logout = async () => {
-    const supabase = await createClient();
-    await supabase.auth.signOut();
+    const { auth } = await createClient();
+    await auth.signOut();
 };
