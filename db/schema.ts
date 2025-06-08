@@ -1,24 +1,47 @@
-import { pgTable, text, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
+import { json, pgSchema, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
-export const User = pgTable('users', {
-    id: uuid().primaryKey().defaultRandom(),
-    name: text().notNull(),
-    email: varchar({ length: 256 }).unique().notNull(),
-    created_at: timestamp().defaultNow(),
-    updated_at: timestamp().defaultNow(),
+type Location = {
+    address_1?: string;
+    brgy: string;
+    city: string;
+    province_or_state: string;
+    zip_code: string;
+    coords?: {
+        lat: string;
+        lng: string;
+    };
+};
+
+const AuthSchema = pgSchema('auth');
+
+const UserTable = AuthSchema.table('users', {
+    id: uuid('id').primaryKey(),
 });
 
-export const userRelations = relations(User, ({ one }) => ({
-    profile: one(Profile),
+export const ProfileTable = pgTable('profiles', {
+    id: uuid().primaryKey().defaultRandom(),
+    full_name: text().notNull(),
+    user_id: uuid()
+        .references(() => UserTable.id)
+        .notNull(),
+    userType: text({ enum: ['ADMIN', 'SELLER', 'BUYER'] }).notNull(),
+});
+
+export const profileRelations = relations(ProfileTable, ({ one }) => ({
+    profile_store: one(StoreTable),
 }));
 
-export const Profile = pgTable('profiles', {
+export const StoreTable = pgTable('stores', {
     id: uuid().primaryKey().defaultRandom(),
-    user_id: uuid().references(() => User.id),
-    photo_url: text(),
+    name: text().notNull(),
+    profile_id: uuid().references(() => ProfileTable.id),
+    location: json().$type<Location>(),
 });
 
-export const profileRelations = relations(Profile, ({ one }) => ({
-    user: one(User, { fields: [Profile.user_id], references: [User.id] }),
+export const storeRelations = relations(StoreTable, ({ one }) => ({
+    user_profile: one(ProfileTable, {
+        fields: [StoreTable.profile_id],
+        references: [ProfileTable.id],
+    }),
 }));
