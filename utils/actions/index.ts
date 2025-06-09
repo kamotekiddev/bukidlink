@@ -3,6 +3,11 @@
 import { eq } from 'drizzle-orm';
 import { createClient } from '@/utils/supabase/server';
 import { db, schema } from '@/db';
+import {
+    CreateProfilePayload,
+    insertProfileSchema,
+    ProfileTable,
+} from '@/db/schema';
 
 export const getCurrentUser = async () => {
     const supabaseClient = await createClient();
@@ -24,4 +29,28 @@ export const userHasProfile = async () => {
     });
 
     return !!profile;
+};
+
+export const setupProfile = async (profileInfo: CreateProfilePayload) => {
+    const { user, error } = await getCurrentUser();
+
+    if (!user || error) throw error;
+
+    const res = await insertProfileSchema.safeParseAsync(profileInfo);
+    if (res.error)
+        return {
+            isSuccess: false,
+            message: res.error.message,
+            data: res.error,
+        };
+
+    const profile = await db
+        .insert(ProfileTable)
+        .values({ ...profileInfo, user_id: user.id });
+
+    return {
+        isSuccess: true,
+        data: profile,
+        message: 'Profile has been created',
+    };
 };

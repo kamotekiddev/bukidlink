@@ -1,5 +1,6 @@
 import { json, pgSchema, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import { z } from 'zod/v4';
 
 type Location = {
     address_1?: string;
@@ -11,6 +12,12 @@ type Location = {
         lat: string;
         lng: string;
     };
+};
+
+type Name = {
+    first: string;
+    middle?: string;
+    last: string;
 };
 
 const AuthSchema = pgSchema('auth');
@@ -28,12 +35,23 @@ export const userRelations = relations(UserTable, ({ one }) => ({
 
 export const ProfileTable = pgTable('profiles', {
     id: uuid().primaryKey().defaultRandom(),
-    full_name: text().notNull(),
+    name: json().$type<Name>().notNull(),
     user_id: uuid()
         .references(() => UserTable.id)
         .notNull(),
-    userType: text({ enum: ['ADMIN', 'SELLER', 'BUYER'] }).notNull(),
+    user_type: text({ enum: ['ADMIN', 'SELLER', 'BUYER'] }).notNull(),
 });
+
+export const insertProfileSchema = z.object({
+    name: z.object({
+        first: z.string().min(2),
+        middle: z.string().optional(),
+        last: z.string().min(2),
+    }),
+    user_type: z.enum(['ADMIN', 'SELLER', 'BUYER']),
+});
+
+export type CreateProfilePayload = z.infer<typeof insertProfileSchema>;
 
 export const profileRelations = relations(ProfileTable, ({ one }) => ({
     user: one(UserTable, {

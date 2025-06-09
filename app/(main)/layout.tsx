@@ -12,7 +12,7 @@ async function Layout({ children }: PropsWithChildren) {
     const pathname = headerList.get('x-current-path') as string;
 
     if (!hasProfile && !pathname.includes(CREATE_PROFILE_PATH))
-        redirect(CREATE_PROFILE_PATH);
+        return redirect(CREATE_PROFILE_PATH);
 
     return <>{children}</>;
 }
