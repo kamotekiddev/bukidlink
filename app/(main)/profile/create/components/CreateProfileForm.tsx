@@ -10,13 +10,13 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-
-import { CreateProfilePayload, insertProfileSchema } from '@/db/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { setupProfile } from '@/utils/actions';
+
+import { setupProfile } from '@/utils/actions/user';
+import { CreateProfilePayload, insertProfileSchema } from '@/db/schema';
 
 function CreateProfileForm() {
     const form = useForm<CreateProfilePayload>({

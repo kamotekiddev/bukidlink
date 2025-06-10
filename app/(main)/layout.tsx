@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { userHasProfile } from '@/utils/actions';
+import { userHasProfile } from '@/utils/actions/user';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
