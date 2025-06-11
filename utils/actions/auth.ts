@@ -1,9 +1,9 @@
 'use server';
 
-import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
 import { ResponseHandler } from '@/utils/response-handler';
+import { createClient } from '@/utils/supabase/server';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export const login = async () => {
     const { auth } = await createClient();

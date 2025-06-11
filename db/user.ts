@@ -1,9 +1,8 @@
-import { z } from 'zod/v4';
-import { json, pgSchema, pgTable, text, uuid } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
-
 import { ShopTable } from '@/db/shop';
 import { type Name } from '@/typings';
+import { relations } from 'drizzle-orm';
+import { json, pgSchema, pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import { z } from 'zod/v4';
 
 const AuthSchema = pgSchema('auth');
 

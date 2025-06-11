@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
 import {
     Form,
     FormControl,
@@ -10,14 +9,14 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
 import { insertProfileSchema } from '@/db/schema';
 import { CreateProfilePayload } from '@/typings/user';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 
 function CreateProfileForm() {
     const router = useRouter();

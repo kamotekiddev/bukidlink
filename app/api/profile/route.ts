@@ -1,12 +1,13 @@
-import { insertProfileSchema, ProfileTable } from '@/db/user';
-import { ResponseHandler } from '@/utils/response-handler';
-import { getCurrentUser } from '@/utils/actions/auth';
 import { db } from '@/db';
+import { ProfileTable, insertProfileSchema } from '@/db/user';
+import { CreateProfilePayload } from '@/typings/user';
+import { getCurrentUser } from '@/utils/actions/auth';
+import { ResponseHandler } from '@/utils/response-handler';
 
 export async function POST(request: Request) {
     try {
         const { data: user } = await getCurrentUser();
-        const body = await request.json();
+        const body: CreateProfilePayload = await request.json();
 
         if (!user)
             return Response.json(

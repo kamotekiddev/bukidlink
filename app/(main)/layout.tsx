@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from 'react';
 import { userHasProfile } from '@/utils/actions/user';
-import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import React, { PropsWithChildren } from 'react';
 
 const CREATE_PROFILE_PATH = '/profile/create';
 

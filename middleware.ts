@@ -1,6 +1,6 @@
-import { type NextRequest, NextResponse } from 'next/server';
-import { updateSession } from '@/utils/supabase/middleware';
 import { ResponseHandler } from '@/utils/response-handler';
+import { updateSession } from '@/utils/supabase/middleware';
+import { type NextRequest, NextResponse } from 'next/server';
 
 const PAGE_PUBLIC_ROUTES = ['/auth/login', '/auth/callback'];
 const API_PUBLIC_ROUTES = [''];
