@@ -1,8 +1,8 @@
 'use server';
 
-import { eq } from 'drizzle-orm';
 import { db, schema } from '@/db';
 import { getCurrentUser } from '@/utils/actions/auth';
+import { eq } from 'drizzle-orm';
 
 export const userHasProfile = async () => {
     const { data: user } = await getCurrentUser();

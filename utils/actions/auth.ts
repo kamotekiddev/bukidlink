@@ -1,9 +1,9 @@
 'use server';
 
+import { formatSuccess } from '@/utils/response-formatter';
 import { createClient } from '@/utils/supabase/server';
-import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
-import { ResponseHandler } from '@/utils/response-handler';
+import { redirect } from 'next/navigation';
 
 export const login = async () => {
     const { auth } = await createClient();
@@ -34,5 +34,5 @@ export const getCurrentUser = async () => {
 
     if (!user || error) throw new Error(error?.message);
 
-    return ResponseHandler.success({ data: user });
+    return formatSuccess({ data: user });
 };

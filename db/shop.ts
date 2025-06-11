@@ -1,6 +1,6 @@
+import { ProfileTable } from '@/db/user';
 import { relations } from 'drizzle-orm';
 import { json, pgTable, text, uuid } from 'drizzle-orm/pg-core';
-import { ProfileTable } from '@/db/user';
 
 export const ShopTable = pgTable('shops', {
     id: uuid().primaryKey().defaultRandom(),

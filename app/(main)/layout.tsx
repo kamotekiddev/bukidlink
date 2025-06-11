@@ -1,18 +1,16 @@
-import React, { PropsWithChildren } from 'react';
+import CreateProfileForm from '@/app/(main)/components/CreateProfileForm';
 import { userHasProfile } from '@/utils/actions/user';
-import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
-
-const CREATE_PROFILE_PATH = '/profile/create';
+import React, { PropsWithChildren } from 'react';
 
 async function Layout({ children }: PropsWithChildren) {
-    const headerList = await headers();
     const hasProfile = await userHasProfile();
 
-    const pathname = headerList.get('x-current-path') as string;
-
-    if (!hasProfile && !pathname.includes(CREATE_PROFILE_PATH))
-        return redirect(CREATE_PROFILE_PATH);
+    if (!hasProfile)
+        return (
+            <div className="h-screen grid place-items-center">
+                <CreateProfileForm />
+            </div>
+        );
 
     return <>{children}</>;
 }
