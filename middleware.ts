@@ -1,4 +1,4 @@
-import { ResponseHandler } from '@/utils/response-handler';
+import { formatError } from '@/utils/response-formatter';
 import { updateSession } from '@/utils/supabase/middleware';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
 
     if (!user && !API_PUBLIC_ROUTES.includes(pathname))
         return NextResponse.json({
-            ...ResponseHandler.error({ message: 'unauthorized' }),
+            ...formatError({ message: 'unauthorized' }),
             status: 401,
         });
 

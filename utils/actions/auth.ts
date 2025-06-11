@@ -1,6 +1,6 @@
 'use server';
 
-import { ResponseHandler } from '@/utils/response-handler';
+import { formatSuccess } from '@/utils/response-formatter';
 import { createClient } from '@/utils/supabase/server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -34,5 +34,5 @@ export const getCurrentUser = async () => {
 
     if (!user || error) throw new Error(error?.message);
 
-    return ResponseHandler.success({ data: user });
+    return formatSuccess({ data: user });
 };

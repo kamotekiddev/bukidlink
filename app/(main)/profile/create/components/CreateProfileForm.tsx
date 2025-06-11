@@ -29,16 +29,14 @@ function CreateProfileForm() {
     });
 
     const onSubmit = form.handleSubmit(async (values) => {
-        try {
-            await fetch('/api/profile', {
-                body: JSON.stringify(values),
-                method: 'POST',
-            });
-            form.reset();
-            router.push('/');
-        } catch (err) {
-            console.log(err);
-        }
+        const response = await fetch('/api/profile', {
+            body: JSON.stringify(values),
+            method: 'POST',
+        });
+
+        if (!response.ok) return;
+        form.reset();
+        router.push('/');
     });
 
     return (
