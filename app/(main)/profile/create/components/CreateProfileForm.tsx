@@ -15,10 +15,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { setupProfile } from '@/utils/actions/user';
-import { CreateProfilePayload, insertProfileSchema } from '@/db/schema';
+import { insertProfileSchema } from '@/db/schema';
+import { CreateProfilePayload } from '@/typings/user';
+import { useRouter } from 'next/navigation';
 
 function CreateProfileForm() {
+    const router = useRouter();
     const form = useForm<CreateProfilePayload>({
         resolver: zodResolver(insertProfileSchema),
         defaultValues: {
@@ -28,8 +30,16 @@ function CreateProfileForm() {
     });
 
     const onSubmit = form.handleSubmit(async (values) => {
-        const res = await setupProfile(values);
-        console.log(res);
+        try {
+            await fetch('/api/profile', {
+                body: JSON.stringify(values),
+                method: 'POST',
+            });
+            form.reset();
+            router.push('/');
+        } catch (err) {
+            console.log(err);
+        }
     });
 
     return (

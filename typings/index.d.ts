@@ -1,4 +1,4 @@
-type Location = {
+export type Location = {
     address_1?: string;
     brgy: string;
     city: string;
@@ -10,8 +10,20 @@ type Location = {
     };
 };
 
-type Name = {
+export type Name = {
     first: string;
     middle?: string;
     last: string;
+};
+
+export type ApiSuccessResponse<T> = {
+    status: 'success';
+    message: string;
+    data?: T;
+};
+
+export type ApiErrorResponse<T> = {
+    status: 'error';
+    message: string;
+    error?: T;
 };

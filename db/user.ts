@@ -3,6 +3,7 @@ import { json, pgSchema, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 import { ShopTable } from '@/db/shop';
+import { type Name } from '@/typings';
 
 const AuthSchema = pgSchema('auth');
 
@@ -27,8 +28,6 @@ export const insertProfileSchema = z.object({
     }),
     user_type: z.enum(['ADMIN', 'SELLER', 'BUYER']),
 });
-
-export type CreateProfilePayload = z.infer<typeof insertProfileSchema>;
 
 export const profileRelations = relations(ProfileTable, ({ one }) => ({
     user: one(UserTable, {

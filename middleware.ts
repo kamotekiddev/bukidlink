@@ -1,7 +1,9 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from '@/utils/supabase/middleware';
+import { ResponseHandler } from '@/utils/response-handler';
 
-const AUTH_ROUTES = ['/auth/login', '/auth/callback'];
+const PAGE_PUBLIC_ROUTES = ['/auth/login', '/auth/callback'];
+const API_PUBLIC_ROUTES = [''];
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
@@ -11,7 +13,13 @@ export async function middleware(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user && !AUTH_ROUTES.includes(pathname))
+    if (!user && !API_PUBLIC_ROUTES.includes(pathname))
+        return NextResponse.json({
+            ...ResponseHandler.error({ message: 'unauthorized' }),
+            status: 401,
+        });
+
+    if (!user && !PAGE_PUBLIC_ROUTES.includes(pathname))
         return NextResponse.redirect(new URL('/auth/login', request.nextUrl));
 
     return response;
