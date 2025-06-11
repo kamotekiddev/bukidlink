@@ -36,7 +36,7 @@ function CreateProfileForm() {
 
         if (!response.ok) return;
         form.reset();
-        router.push('/');
+        router.refresh();
     });
 
     return (
