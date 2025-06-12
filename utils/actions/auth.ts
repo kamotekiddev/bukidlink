@@ -1,6 +1,6 @@
 'use server';
 
-import { formatSuccess } from '@/utils/response-formatter';
+import { formatResponse } from '@/utils/response-formatter';
 import { createClient } from '@/utils/supabase/server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -20,19 +20,25 @@ export const login = async () => {
 };
 
 export const logout = async () => {
-    const { auth } = await createClient();
-    await auth.signOut();
+    try {
+        const { auth } = await createClient();
+        await auth.signOut();
+        return formatResponse({ isSuccess: true, message: 'User Logged Out' });
+    } catch (error) {
+        return formatResponse({
+            isSuccess: false,
+            message: 'Something went wrong',
+            data: error,
+        });
+    }
 };
 
 export const getCurrentUser = async () => {
     const supabaseClient = await createClient();
-
     const {
         data: { user },
-        error,
     } = await supabaseClient.auth.getUser();
 
-    if (!user || error) throw new Error(error?.message);
-
-    return formatSuccess({ data: user });
+    if (!user) return null;
+    return user;
 };

@@ -1,43 +1,23 @@
-type SuccessResponse<T> = {
-    status: 'success';
-    message: string;
-    data?: T;
-};
-
-type ErrorResponse<T> = {
-    status: 'error';
-    message: string;
-    error?: T;
-};
-
-type SuccessParams<T> = {
+type ResponseParams<T> = {
+    isSuccess: boolean;
     message?: string;
     data?: T;
 };
 
-type ErrorParams<T> = {
+type ResponseFormat<T> = {
+    isSuccess: boolean;
     message?: string;
-    error?: T;
+    data?: T;
 };
 
-export const formatSuccess = <T>({
-    message = 'Success',
+export const formatResponse = <T>({
+    isSuccess,
+    message = '',
     data,
-}: SuccessParams<T>): SuccessResponse<T> => {
+}: ResponseParams<T>): ResponseFormat<T> => {
     return {
-        status: 'success',
+        isSuccess,
         message,
         ...(data !== undefined ? { data } : {}),
-    };
-};
-
-export const formatError = <T>({
-    message = 'An error occurred',
-    error,
-}: ErrorParams<T>): ErrorResponse<T> => {
-    return {
-        status: 'error',
-        message,
-        ...(error !== undefined ? { error } : {}),
     };
 };

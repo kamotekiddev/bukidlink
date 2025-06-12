@@ -2,18 +2,21 @@ import { db } from '@/db';
 import { ProfileTable, insertProfileSchema } from '@/db/user';
 import { CreateProfilePayload } from '@/typings/user';
 import { getCurrentUser } from '@/utils/actions/auth';
-import { formatError, formatSuccess } from '@/utils/response-formatter';
+import { formatResponse } from '@/utils/response-formatter';
 import { eq } from 'drizzle-orm';
 
 export async function POST(request: Request) {
     try {
-        const { data: user } = await getCurrentUser();
+        const user = await getCurrentUser();
         const body: CreateProfilePayload = await request.json();
 
         if (!user)
-            return Response.json(formatSuccess({ message: 'Unauthorized' }), {
-                status: 401,
-            });
+            return Response.json(
+                formatResponse({ isSuccess: false, message: 'Unauthorized' }),
+                {
+                    status: 401,
+                }
+            );
 
         const userAlreadyExists = await db.query.ProfileTable.findFirst({
             where: eq(ProfileTable.user_id, user.id),
@@ -23,7 +26,8 @@ export async function POST(request: Request) {
 
         if (userAlreadyExists)
             return Response.json(
-                formatError({
+                formatResponse({
+                    isSuccess: false,
                     message: 'User already has a profile',
                 }),
                 { status: 400 }
@@ -34,9 +38,10 @@ export async function POST(request: Request) {
 
         if (!result.success)
             return Response.json(
-                formatError({
+                formatResponse({
+                    isSuccess: false,
                     message: 'Invalid request body',
-                    error: result.error,
+                    data: result.error,
                 }),
                 { status: 400 }
             );
@@ -47,14 +52,19 @@ export async function POST(request: Request) {
             .returning();
 
         return Response.json(
-            formatSuccess({
+            formatResponse({
+                isSuccess: true,
                 data: profile,
                 message: 'Profile created successfully',
             })
         );
     } catch (error) {
         return Response.json(
-            formatError({ message: 'Internal server error', error }),
+            formatResponse({
+                isSuccess: false,
+                message: 'Internal server error',
+                data: error,
+            }),
             { status: 500 }
         );
     }
