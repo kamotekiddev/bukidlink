@@ -1,4 +1,4 @@
-import { formatError } from '@/utils/response-formatter';
+import { formatResponse } from '@/utils/response-formatter';
 import { updateSession } from '@/utils/supabase/middleware';
 import { type NextRequest, NextResponse } from 'next/server';
 
@@ -13,9 +13,13 @@ export async function middleware(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user && !API_PUBLIC_ROUTES.includes(pathname))
+    if (
+        !user &&
+        pathname.startsWith('/api') &&
+        !API_PUBLIC_ROUTES.includes(pathname)
+    )
         return NextResponse.json({
-            ...formatError({ message: 'unauthorized' }),
+            ...formatResponse({ isSuccess: false, message: 'unauthorized' }),
             status: 401,
         });
 
